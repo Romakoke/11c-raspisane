@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>11-сынып | Сабақ кестесі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F1E8; --card:#FFFDF9; --brown:#7A5C48; --dark:#4B382F;
+    --nude:#B99A82; --beige:#E8D9C8; --text:#40352F;
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px; margin:0 auto; padding:0 16px 40px;}
+
+  header.site{
+    padding:18px 4px 10px; text-align:center;
+  }
+  header.site .grade{
+    font-size:26px; font-weight:800; color:var(--dark); letter-spacing:-.02em;
+  }
+  header.site .sub{
+    font-size:14px; font-weight:600; color:var(--brown); margin-top:2px;
+  }
+  header.site .year{
+    font-size:12px; color:var(--nude); margin-top:2px; font-weight:500;
+  }
+
+  .today-card{
+    background:var(--card); border-radius:20px; padding:14px 18px;
+    box-shadow:0 4px 20px rgba(122,92,72,.08);
+    display:flex; justify-content:space-between; align-items:center;
+    margin:10px 0 16px; animation:fadeUp .5s ease both;
+  }
+  .today-card .label{font-size:11px; color:var(--nude); font-weight:700; text-transform:uppercase; letter-spacing:.04em;}
+  .today-card .date{font-size:15px; font-weight:700; color:var(--dark); margin-top:2px;}
+  .today-card .badge{
+    background:var(--beige); color:var(--brown); font-size:11px; font-weight:700;
+    padding:6px 12px; border-radius:999px;
+  }
+
+  .class-tabs{
+    display:flex; gap:8px; margin-bottom:14px;
+  }
+  .class-tab{
+    flex:1; text-align:center; padding:10px 6px; border-radius:14px;
+    background:var(--card); color:var(--brown); font-weight:700; font-size:14px;
+    border:1px solid var(--beige); cursor:pointer; transition:.25s;
+  }
+  .class-tab.active{ background:var(--brown); color:#fff; box-shadow:0 4px 14px rgba(122,92,72,.25); border-color:var(--brown);}
+
+  .day-scroll{
+    display:flex; gap:8px; overflow-x:auto; padding:4px 2px 12px;
+    scrollbar-width:none;
+  }
+  .day-scroll::-webkit-scrollbar{display:none;}
+  .day-btn{
+    flex:0 0 auto; padding:10px 16px; border-radius:14px; font-size:13px;
+    font-weight:700; background:var(--beige); color:var(--brown);
+    white-space:nowrap; cursor:pointer; transition:.25s; border:none;
+    text-transform:uppercase; letter-spacing:.02em;
+  }
+  .day-btn.active{ background:var(--brown); color:#fff; box-shadow:0 4px 14px rgba(122,92,72,.3);}
+
+  .next-lesson{
+    background:linear-gradient(135deg,var(--beige),var(--card));
+    border-radius:18px; padding:14px 18px; margin-bottom:16px;
+    box-shadow:0 4px 16px rgba(122,92,72,.07);
+  }
+  .next-lesson .tag{font-size:11px; font-weight:700; color:var(--brown); text-transform:uppercase; letter-spacing:.04em;}
+  .next-lesson .subj{font-size:16px; font-weight:700; color:var(--dark); margin-top:4px;}
+  .next-lesson .time{font-size:13px; color:var(--nude); margin-top:2px; font-weight:600;}
+
+  .lessons{ display:flex; flex-direction:column; gap:12px; }
+  .lesson-card{
+    width:100%; background:var(--card); border-radius:20px; padding:16px 18px;
+    box-shadow:0 3px 14px rgba(122,92,72,.08); border:1px solid rgba(185,154,130,.15);
+    animation:fadeUp .45s ease both; position:relative; overflow:hidden;
+  }
+  .lesson-card.now{ border:1.5px solid var(--brown); box-shadow:0 6px 20px rgba(122,92,72,.2);}
+  .lesson-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;}
+  .lesson-num{ font-size:12px; font-weight:700; color:var(--nude); text-transform:uppercase; letter-spacing:.03em;}
+  .now-badge{
+    font-size:10px; font-weight:800; color:#fff; background:var(--brown);
+    padding:4px 9px; border-radius:999px; letter-spacing:.03em;
+  }
+  .lesson-time{ font-size:19px; font-weight:800; color:var(--brown); letter-spacing:-.01em;}
+  .lesson-subject{ font-size:16px; font-weight:700; color:var(--dark); margin-top:6px; line-height:1.35;}
+  .lesson-note{ font-size:12.5px; color:var(--nude); margin-top:4px; font-weight:500;}
+
+  .empty{ text-align:center; padding:40px 10px; color:var(--nude); font-weight:600; }
+
+  footer{ text-align:center; padding:26px 0 6px; color:var(--nude); font-size:12px; font-weight:500;}
+  footer .small{font-size:11px; margin-top:2px;}
+
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  @media (min-width:600px){
+    .lesson-card{padding:18px 22px;}
+    .class-tab:hover, .day-btn:hover{ opacity:.85; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <div class="grade">11-сынып</div>
+    <div class="sub">Сабақ кестесі</div>
+    <div class="year">2026–2027 оқу жылы · 1-жартыжылдық</div>
+  </header>
+
+  <div class="today-card">
+    <div>
+      <div class="label">Бүгін</div>
+      <div class="date" id="todayDate">—</div>
+    </div>
+    <div class="badge" id="todayBadge">—</div>
+  </div>
+
+  <div class="class-tabs" id="classTabs"></div>
+  <div class="day-scroll" id="dayScroll"></div>
+
+  <div id="nextLessonBox"></div>
+  <div class="lessons" id="lessonsBox"></div>
+
+  <footer>
+    <div>© 2026 | 11-сынып</div>
+    <div class="small">Class Schedule</div>
+  </footer>
+</div>
+
+<script>
+const SCHEDULE = {"11А": {"Дүйсенбі": [{"time": "08:30–09:50", "subject": "Математика/Ағылшын/Биология/Құқық (элективті топ)"}, {"time": "10:00–11:20", "subject": "Информатика"}, {"time": "11:30–12:50", "subject": "SAT ағылшын / түрік тілі"}, {"time": "14:00–15:50", "subject": "Ағылшын тілі", "note":"Форна Джон, Сойле Питер, Алимова Мөлдір"}, {"time": "16:00–17:00", "subject": "Үй тапсырмасын орындау"}], "Сейсенбі": [{"time": "08:30–09:50", "subject": "SAT математика"}, {"time": "10:00–11:20", "subject": "Физика/Дж.тарихы/Информатика/География/Химия (таңдау бойынша)"}, {"time": "11:30–12:50", "subject": "Математикалық сауаттылық"}, {"time": "14:00–15:50", "subject": "Ағылшын тілі", "note":"Форна Джон, Сойле Питер, Алимова Мөлдір"}, {"time": "16:00–17:00", "subject": "Үй тапсырмасын орындау"}], "Сәрсенбі": [{"time": "08:30–09:50", "subject": "Математика/Ағылшын/Биология/Құқық (элективті топ)"}, {"time": "14:00–15:50", "subject": "Ағылшын тілі", "note":"Форна Джон, Сойле Питер, Алимова Мөлдір"}, {"time": "11:30–12:50", "subject": "Қытай/түрік тілдері"}, {"time": "", "subject": "Ж.И."}, {"time": "", "subject": "АӘД"}, {"time": "16:00–17:00", "subject": "Үй тапсырмасын орындау"}], "Бейсенбі": [{"time": "08:30–09:50", "subject": "Физика/Дж.тарихы/Информатика/География/Химия (таңдау бойынша)"}, {"time": "10:00–11:20", "subject": "Математикалық сауаттылық"}, {"time": "11:30–12:50", "subject": "Қазақстан тарихы"}, {"time": "14:00–15:50", "subject": "Ағылшын тілі", "note":"Форна Джон, Сойле Питер, Алимова Мөлдір"}, {"time": "16:00–17:00", "subject": "Үй тапсырмасын орындау"}], "Жұма": [{"time": "14:00–15:50", "subject": "Ағылшын тілі", "note":"Форна Джон, Сойле Питер, Алимова Мөлдір"}, {"time": "10:00–11:20", "subject": "Қазақстан тарихы"}, {"time": "11:30–12:50", "subject": "Қазақ тілі/қытай/түрік тілдері"}, {"time": "", "subject": "Сынып сағаты"}, {"time": "", "subject": "Тест"}]}, "11В": {"Дүйсенбі": [{"time": "08:30–09:50", "subject": "SAT ағылшын/қытай тілі"}, {"time": "10:00–11:20", "subject": "Қазақстан тарихы"}], "Сейсенбі": [{"time": "08:30–09:50", "subject": "Математикалық сауаттылық"}, {"time": "10:00–11:20", "subject": "Қазақстан тарихы"}], "Сәрсенбі": [{"time": "08:30–09:50", "subject": "SAT математика"}, {"time": "", "subject": "АӘД"}, {"time": "", "subject": "Ж.И."}], "Бейсенбі": [{"time": "08:30–09:50", "subject": "Қазақ тілі"}, {"time": "10:00–11:20", "subject": "Математикалық сауаттылық"}], "Жұма": [{"time": "08:30–09:50", "subject": "Информатика"}, {"time": "", "subject": "Сынып сағаты"}]}, "11C": {"Дүйсенбі": [{"time": "08:30–09:50", "subject": "Математика/құқық/биология/ағылшын"}, {"time": "10:00–11:20", "subject": "Тарих Қазахстана"}, {"time": "11:30–12:50", "subject": "SAT математика"}], "Сейсенбі": [{"time": "08:30–09:50", "subject": "Физика/Всем.история/Информатика/География/Химия (таңдау бойынша)"}, {"time": "10:00–11:20", "subject": "Мат.грамотность"}, {"time": "11:30–12:50", "subject": "SAT ағылшын", "note":"Лейкман Джон"}], "Сәрсенбі": [{"time": "08:30–09:50", "subject": "Математика/құқық/биология/ағылшын"}, {"time": "10:00–11:20", "subject": "Информатика"}, {"time": "", "subject": "Русский язык"}], "Бейсенбі": [{"time": "08:30–09:50", "subject": "Мат.грамотность"}, {"time": "10:00–11:20", "subject": "Физика/Всем.история/Информатика/География/Химия (таңдау бойынша)"}, {"time": "11:30–12:50", "subject": "Китайский язык"}], "Жұма": [{"time": "08:30–09:50", "subject": "История Казахстана"}, {"time": "10:00–11:20", "subject": "И.И."}, {"time": "", "subject": "Классный час"}]}};
+
+const CLASS_LABELS = {"11А":"11 «А»","11В":"11 «В»","11C":"11 «C»"};
+const DAYS = ["Дүйсенбі","Сейсенбі","Сәрсенбі","Бейсенбі","Жұма"];
+const DAY_SHORT = {"Дүйсенбі":"Дс","Сейсенбі":"Сс","Сәрсенбі":"Ср","Бейсенбі":"Бс","Жұма":"Жм"};
+const MONTHS = ["қаңтар","ақпан","наурыз","сәуір","мамыр","маусым","шілде","тамыз","қыркүйек","қазан","қараша","желтоқсан"];
+
+let currentClass = "11А";
+let currentDay = null;
+
+function jsDow(){ return new Date().getDay(); } // 0=Sun
+function todayKzDay(){
+  const map = {1:"Дүйсенбі",2:"Сейсенбі",3:"Сәрсенбі",4:"Бейсенбі",5:"Жұма"};
+  return map[jsDow()] || null;
+}
+
+function renderTopInfo(){
+  const now = new Date();
+  const d = now.getDate();
+  const m = MONTHS[now.getMonth()];
+  const weekdayFull = {0:"жексенбі",1:"дүйсенбі",2:"сейсенбі",3:"сәрсенбі",4:"бейсенбі",5:"жұма",6:"сенбі"}[now.getDay()];
+  document.getElementById('todayDate').textContent = `${d} ${m}, ${weekdayFull}`;
+  const kzDay = todayKzDay();
+  document.getElementById('todayBadge').textContent = kzDay ? "Оқу күні" : "Демалыс";
+}
+
+function renderClassTabs(){
+  const box = document.getElementById('classTabs');
+  box.innerHTML = '';
+  Object.keys(CLASS_LABELS).forEach(c=>{
+    const btn = document.createElement('div');
+    btn.className = 'class-tab' + (c===currentClass ? ' active' : '');
+    btn.textContent = CLASS_LABELS[c];
+    btn.onclick = ()=>{ currentClass = c; renderClassTabs(); renderLessons(); };
+    box.appendChild(btn);
+  });
+}
+
+function renderDayScroll(){
+  const box = document.getElementById('dayScroll');
+  box.innerHTML = '';
+  DAYS.forEach(d=>{
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (d===currentDay ? ' active' : '');
+    btn.textContent = d.toUpperCase();
+    btn.onclick = ()=>{ currentDay = d; renderDayScroll(); renderLessons(); };
+    box.appendChild(btn);
+  });
+}
+
+function parseTimeRange(t){
+  if(!t) return null;
+  const [a,b] = t.split('–');
+  if(!a||!b) return null;
+  const [ah,am] = a.split(':').map(Number);
+  const [bh,bm] = b.split(':').map(Number);
+  return {start: ah*60+am, end: bh*60+bm};
+}
+
+function nowMinutes(){
+  const n = new Date();
+  return n.getHours()*60 + n.getMinutes();
+}
+
+function renderLessons(){
+  const lessonsBox = document.getElementById('lessonsBox');
+  const nextBox = document.getElementById('nextLessonBox');
+  lessonsBox.innerHTML = '';
+  nextBox.innerHTML = '';
+
+  const dayData = (SCHEDULE[currentClass] && SCHEDULE[currentClass][currentDay]) || [];
+
+  if(dayData.length === 0){
+    lessonsBox.innerHTML = '<div class="empty">Бұл күнге сабақ жоқ 🤍</div>';
+    return;
+  }
+
+  const nm = nowMinutes();
+  const isToday = currentDay === todayKzDay();
+  let activeIdx = -1, nextIdx = -1;
+
+  if(isToday){
+    dayData.forEach((l,i)=>{
+      const r = parseTimeRange(l.time);
+      if(!r) return;
+      if(nm >= r.start && nm <= r.end) activeIdx = i;
+      if(nextIdx===-1 && nm < r.start) nextIdx = i;
+    });
+  }
+
+  if(isToday && nextIdx !== -1){
+    const l = dayData[nextIdx];
+    nextBox.innerHTML = `
+      <div class="next-lesson">
+        <div class="tag">Келесі сабақ</div>
+        <div class="subj">${l.subject}</div>
+        <div class="time">${l.time || ''}</div>
+      </div>`;
+  }
+
+  dayData.forEach((l,i)=>{
+    const card = document.createElement('div');
+    card.className = 'lesson-card' + (i===activeIdx ? ' now' : '');
+    card.style.animationDelay = (i*0.05)+'s';
+    card.innerHTML = `
+      <div class="lesson-top">
+        <div class="lesson-num">${i+1}-сабақ</div>
+        ${i===activeIdx ? '<div class="now-badge">🟤 ҚАЗІР</div>' : ''}
+      </div>
+      ${l.time ? `<div class="lesson-time">${l.time}</div>` : ''}
+      <div class="lesson-subject">${l.subject}</div>
+      ${l.note ? `<div class="lesson-note">${l.note}</div>` : ''}
+    `;
+    lessonsBox.appendChild(card);
+  });
+}
+
+function init(){
+  renderTopInfo();
+  currentDay = todayKzDay() || "Дүйсенбі";
+  renderClassTabs();
+  renderDayScroll();
+  renderLessons();
+}
+init();
+</script>
+</body>
+</html>
